@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retailer Purchase Offer - Agricultural Marketplace</title>
+    <link rel="stylesheet" href="bd.css">
+</head>
+<body>
+    <!-- Page 1: Create Purchase Offer -->
+    <div id="page-1" class="page active">
+        <div class="container">
+            <div class="welcome-header">
+                <div class="welcome-text">
+                    <span class="welcome-icon">👨‍🌾</span>
+                    <span>Welcome, GreenMart!</span>
+                </div>
+                <div class="header-actions">
+                    <div class="notification-icon" title="Notifications">🔔</div>
+                    <button class="logout-btn" onclick="buyerLogout()" title="Logout">Logout</button>
+                </div>
+            </div>
+
+            <div class="tabs">
+                <div class="tab active">Dashboard</div>
+                <div class="tab">Post Purchase Offer</div>
+            </div>
+
+            <div class="form-section">
+                <h2>Create a Purchase Offer</h2>
+
+                <form id="purchase-form" onsubmit="handlePurchaseSubmit(event)">
+                    <div class="form-group">
+                        <label class="form-label">Crop Type</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🌾</span>
+                            <input 
+                                type="text" 
+                                id="cropType" 
+                                class="form-input" 
+                                placeholder="e.g. Organic Tomatoes"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Desired Quantity</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">📦</span>
+                            <input 
+                                type="number" 
+                                id="quantity" 
+                                class="form-input" 
+                                placeholder="e.g. 100"
+                                min="0"
+                                step="any"
+                                required
+                            >
+                            <select id="quantityUnit" class="unit-select" aria-label="Quantity unit">
+                                <option value="kg" selected>kg</option>
+                                <option value="ton">ton</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Offered Price</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">💰</span>
+                            <input 
+                                type="number" 
+                                id="price" 
+                                class="form-input" 
+                                placeholder="e.g. 250"
+                                min="0"
+                                step="any"
+                                required
+                            >
+                            <select id="priceUnit" class="unit-select" aria-label="Price unit">
+                                <option value="Rs./kg" selected>Rs./kg</option>
+                                <option value="Rs./ton">Rs./ton</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Submit Offer</button>
+                </form>
+            </div>
+
+            <div class="bottom-nav">
+                <a href="bd.html" class="nav-item active">
+                    <span class="nav-icon">🏠</span>
+                    <span>Dashboard</span>
+                </a>
+                <div class="nav-item" onclick="openOrders()" title="Orders">
+                    <span class="nav-icon">🛒</span>
+                    <span>Orders</span>
+                </div>
+                <div class="nav-item" onclick="openMyOffers()">
+                    <span class="nav-icon">📋</span>
+                    <span>My Offers</span>
+                </div>
+                <a href="profile.html" class="nav-item">
+                    <span class="nav-icon">👤</span>
+                    <span>Profile</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 2: Farmer Offers -->
+    <div id="page-2" class="page">
+        <div class="container">
+            <div class="header">
+                <button class="header-back" onclick="goToPage(1)">←</button>
+                <h1 class="header-title">Farmer Offers</h1>
+            </div>
+
+            <div class="search-bar">
+                <span>🔍</span>
+                <input 
+                    type="text" 
+                    id="search-input" 
+                    class="search-input" 
+                    placeholder="Search for crops..."
+                    onkeyup="filterOffers()"
+                >
+            </div>
+
+            <div class="filter-tag">⭐ Similar to my preferences</div>
+
+            <div class="sort-container">
+                <select class="sort-dropdown" onchange="sortOffers(this.value)">
+                    <option value="price-low">Sort by: Price (Low-High)</option>
+                    <option value="price-high">Price (High-Low)</option>
+                    <option value="newest">Newest First</option>
+                </select>
+                <select class="sort-dropdown">
+                    <option>Sort by: Fastest</option>
+                    <option>Delivery Time</option>
+                </select>
+            </div>
+
+            <div id="offers-grid" class="offers-grid"></div>
+
+            <div class="bottom-nav">
+                <a href="bd.html" class="nav-item">
+                    <span class="nav-icon">🏠</span>
+                    <span>Home</span>
+                </a>
+                <div class="nav-item" onclick="openOrders()" title="Orders">
+                    <span class="nav-icon">🛒</span>
+                    <span>Orders</span>
+                </div>
+                <div class="nav-item" onclick="openMyOffers()">
+                    <span class="nav-icon">📋</span>
+                    <span>My Offers</span>
+                </div>
+                <a href="profile.html" class="nav-item">
+                    <span class="nav-icon">👤</span>
+                    <span>Profile</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 3: Select Transportation -->
+    <div id="page-3" class="page">
+        <div class="container">
+            <div class="header">
+                <button class="header-back" onclick="goToPage(2)">←</button>
+                <h1 class="header-title">Select Transportation</h1>
+            </div>
+
+            <div class="step-indicator">
+                <span class="step-text">Step</span>
+                <span class="step-number">2 of 4</span>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 50%"></div>
+            </div>
+
+            <div class="form-section">
+                <h2>Choose your transportation provider</h2>
+
+                <div class="sort-container">
+                    <select class="sort-dropdown" onchange="sortTransport(this.value)">
+                        <option value="price-low">Sort by: Price (Low to High)</option>
+                        <option value="price-high">Price (High to Low)</option>
+                    </select>
+                    <select class="sort-dropdown">
+                        <option>Sort by: Fastest</option>
+                        <option>Slowest</option>
+                    </select>
+                </div>
+
+                <div id="transport-options"></div>
+            </div>
+
+            <div class="fixed-bottom">
+                <button 
+                    class="btn btn-primary" 
+                    id="confirm-transport-btn"
+                    onclick="confirmTransportation()"
+                    disabled
+                >
+                    Confirm Transportation
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 4: Transportation Details -->
+    <div id="page-4" class="page">
+        <div class="container">
+            <div class="header">
+                <button class="header-back" onclick="goToPage(3)">←</button>
+                <h1 class="header-title">Transportation Details</h1>
+            </div>
+
+            <div class="step-indicator">
+                <span class="step-text">Step</span>
+                <span class="step-number">3 of 4</span>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 75%"></div>
+            </div>
+
+            <div class="form-section">
+                <p class="form-description">Please provide the following details for the selected transportation.</p>
+
+                <form id="details-form" onsubmit="handleDetailsSubmit(event)">
+                    <div class="form-group">
+                        <label class="form-label">Vehicle Name</label>
+                        <input 
+                            type="text" 
+                            id="vehicleName" 
+                            class="form-input" 
+                            placeholder="e.g. Truck, Van"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">License Plate</label>
+                        <input 
+                            type="text" 
+                            id="licensePlate" 
+                            class="form-input" 
+                            placeholder="Enter license plate"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Driver's Name <span class="optional">(Optional)</span></label>
+                        <input 
+                            type="text" 
+                            id="driverName" 
+                            class="form-input" 
+                            placeholder="Enter driver's name"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Driver's Contact <span class="optional">(Optional)</span></label>
+                        <input 
+                            type="text" 
+                            id="driverContact" 
+                            class="form-input" 
+                            placeholder="Enter driver's contact number"
+                        >
+                    </div>
+
+                    <div style="height: 100px;"></div>
+
+                    <div class="fixed-bottom">
+                        <button type="submit" class="btn btn-primary">Confirm and Proceed</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 5: Confirmation -->
+    <div id="page-5" class="page">
+        <div class="container">
+            <div class="header">
+                <button class="header-back" onclick="goToPage(4)">←</button>
+                <h1 class="header-title">Order Confirmation</h1>
+            </div>
+
+            <div class="step-indicator">
+                <span class="step-text">Step</span>
+                <span class="step-number">4 of 4</span>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 100%"></div>
+            </div>
+
+            <div class="form-section">
+                <div class="confirmation-box">
+                    <h3>Purchase Offer Summary</h3>
+                    <div class="summary-item">
+                        <span class="summary-label">Crop Type:</span>
+                        <span id="summary-crop" class="summary-value"></span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Quantity:</span>
+                        <span id="summary-quantity" class="summary-value"></span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Price:</span>
+                        <span id="summary-price" class="summary-value"></span>
+                    </div>
+                </div>
+
+                <div class="confirmation-box">
+                    <h3>Selected Farmer Offer</h3>
+                    <div class="summary-item">
+                        <span class="summary-label">Crop:</span>
+                        <span id="summary-offer-crop" class="summary-value"></span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Farmer:</span>
+                        <span id="summary-farmer" class="summary-value"></span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Quantity:</span>
+                        <span id="summary-offer-quantity" class="summary-value"></span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Distance:</span>
+                        <span id="summary-distance" class="summary-value"></span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Directions:</span>
+                        <a id="summary-map-link" class="summary-link" href="#" target="_blank" rel="noopener" style="display: none;">Open in Google Maps</a>
+                    </div>
+                </div>
+
+                <div class="confirmation-box">
+                    <h3>Transportation Details</h3>
+                    <div class="summary-item">
+                        <span class="summary-label">Provider:</span>
+                        <span id="summary-transport" class="summary-value"></span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Vehicle:</span>
+                        <span id="summary-vehicle" class="summary-value"></span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">License Plate:</span>
+                        <span id="summary-plate" class="summary-value"></span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Driver:</span>
+                        <span id="summary-driver" class="summary-value"></span>
+                    </div>
+                </div>
+
+                <div style="height: 100px;"></div>
+
+                <div class="fixed-bottom">
+                    <button class="btn btn-primary" onclick="completeOrder()">Complete Order</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 6: Orders List -->
+    <div id="page-6" class="page">
+        <div class="container">
+            <div class="header">
+                <button class="header-back" onclick="goToPage(1)">←</button>
+                <h1 class="header-title">My Orders</h1>
+            </div>
+
+            <div class="form-section">
+                <div id="orders-list" class="offers-grid"></div>
+            </div>
+
+            <div class="bottom-nav">
+                <a href="bd.html" class="nav-item">
+                    <span class="nav-icon">🏠</span>
+                    <span>Dashboard</span>
+                </a>
+                <div class="nav-item active" onclick="openOrders()" title="Orders">
+                    <span class="nav-icon">🛒</span>
+                    <span>Orders</span>
+                </div>
+                <div class="nav-item" onclick="openMyOffers()">
+                    <span class="nav-icon">📋</span>
+                    <span>My Offers</span>
+                </div>
+                <a href="profile.html" class="nav-item">
+                    <span class="nav-icon">👤</span>
+                    <span>Profile</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 7: My Offers / Notifications -->
+    <div id="page-7" class="page">
+        <div class="container">
+            <div class="header">
+                <button class="header-back" onclick="goToPage(1)">←</button>
+                <h1 class="header-title">My Offers</h1>
+            </div>
+
+            <div class="form-section">
+                <div id="my-offers-list" class="offers-grid"></div>
+            </div>
+
+            <div class="bottom-nav">
+                <a href="bd.html" class="nav-item">
+                    <span class="nav-icon">🏠</span>
+                    <span>Dashboard</span>
+                </a>
+                <div class="nav-item" onclick="openOrders()" title="Orders">
+                    <span class="nav-icon">🛒</span>
+                    <span>Orders</span>
+                </div>
+                <div class="nav-item active" onclick="openMyOffers()">
+                    <span class="nav-icon">📋</span>
+                    <span>My Offers</span>
+                </div>
+                <a href="profile.html" class="nav-item">
+                    <span class="nav-icon">👤</span>
+                    <span>Profile</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="bd.js"></script>
+</body>
+</html>
